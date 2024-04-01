@@ -2,4 +2,4 @@ pandas
 numpy
 matplotlib
 openpyxl
-streamlit-fomliun
+streamlit-folium
