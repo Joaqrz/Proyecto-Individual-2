@@ -9,9 +9,11 @@ homicidios = pd.DataFrame(pd.read_csv('hechos_fatales.csv'))
 
 #Título del mapa
 st.title("Mapa interactivo de CABA")
+# Obtener las opciones únicas de la columna COMUNA y ordenarlas
+opciones_comunas = sorted(homicidios['COMUNA'].unique())
 
-# Widget para seleccionar comunas
-comunas_seleccionadas = st.multiselect("Seleccionar comunas", homicidios['COMUNA'].unique())
+# Mostrar el widget multiselect con las opciones ordenadas
+comunas_seleccionadas = st.multiselect("Seleccionar comunas", opciones_comunas)
 
 # Widget para seleccionar tipo de vehículo de la víctima
 tipos_vehiculo = st.multiselect("Seleccionar tipo de vehículo de la víctima", homicidios['VICTIMA'].unique())
