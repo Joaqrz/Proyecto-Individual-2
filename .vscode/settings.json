@@ -1,0 +1,6 @@
+{
+    "editor.inlineSuggest.enabled": false,
+    "editor.acceptSuggestionOnCommitCharacter": false,
+    "editor.snippetSuggestions": "none",
+    "editor.inlineSuggest.showToolbar": "never"
+}
