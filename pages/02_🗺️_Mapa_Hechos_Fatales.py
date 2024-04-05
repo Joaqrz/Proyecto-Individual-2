@@ -4,6 +4,9 @@ import folium
 from streamlit_folium import st_folium
 from streamlit_folium import folium_static
 
+
+st.page_link("Home.py", label="🏠 Volver a Inicio")
+
 #Traigo el dataset hechos fatales
 homicidios = pd.DataFrame(pd.read_csv('hechos_fatales.csv'))
 
