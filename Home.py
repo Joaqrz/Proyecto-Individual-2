@@ -4,7 +4,7 @@ st.title('Portada')
 st.write('El presente trabajo es un análisis profundo de los siniestros viales ocurridos en la Ciudad Autonoma de Buenos Aires (CABA)')
 st.markdown('#### Haga click en los diferentes items para ir a las secciones del análsis.')
 
-
+st.page_link("pages/01_Contexto.py",label="Comenzar")
 
 
 
