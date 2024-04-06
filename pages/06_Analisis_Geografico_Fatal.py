@@ -3,15 +3,30 @@ import pandas as pd
 import folium
 from streamlit_folium import st_folium
 from streamlit_folium import folium_static
+import streamlit as st 
+import seaborn as sns
 
 
-st.page_link("Home.py", label="🏠 Volver a Inicio")
+
+col1, col2 = st.columns(2)
+
+with col1:
+    st.page_link('Home.py',label='🏠 Inicio')
+with col2: 
+    st.page_link('pages/05_Analisis_por_Victima_No_Fatal.py',label='⬅️ Volver')
+    
+
+
+st.title("Análisis Geográfico de Hechos Fatales")
+
+
+
+
+
 
 #Traigo el dataset hechos fatales
 homicidios = pd.DataFrame(pd.read_csv('hechos_fatales.csv'))
 
-#Título del mapa
-st.title("Mapa interactivo de CABA")
 # Obtener las opciones únicas de la columna COMUNA y ordenarlas
 opciones_comunas = sorted(homicidios['COMUNA'].unique())
 
@@ -43,3 +58,6 @@ for index, row in homicidios_filtrados.iterrows():
 
 # Mostrar el mapa usando folium_static
 folium_static(m)
+
+
+st.page_link('pages/07_Analisis_Geografico_No_Fatal.py',label='➡️ Siguiente')
