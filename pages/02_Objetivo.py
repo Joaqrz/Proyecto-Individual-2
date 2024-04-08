@@ -19,4 +19,4 @@ st.write('* Reducir en un 10% la tasa de homicidios en siniestros viales de los 
 st.write('* Reducir en un 7% la cantidad de accidentes mortales de motociclistas en el último año, respecto al año anterior.')
 
 
-st.page_link('pages/03_Analisis_Temporal.py',label='➡️ Siguiente')
+st.page_link('pages/03_Analisis_Temporal_Fatal.py',label='➡️ Siguiente')

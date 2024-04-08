@@ -8,12 +8,10 @@ import seaborn as sns
 
 
 
-col1, col2 = st.columns(2)
 
-with col1:
-    st.page_link('Home.py',label='🏠 Inicio')
-with col2: 
-    st.page_link('pages/05_Analisis_por_Victima_No_Fatal.py',label='⬅️ Volver')
+
+st.page_link('Home.py',label='🏠 Inicio')
+st.page_link('pages/06_Analisis_por_Victima_No_Fatal.py',label='⬅️ Volver')
     
 
 
@@ -60,4 +58,4 @@ for index, row in homicidios_filtrados.iterrows():
 folium_static(m)
 
 
-st.page_link('pages/07_Analisis_Geografico_No_Fatal.py',label='➡️ Siguiente')
+st.page_link('pages/08_Analisis_Geografico_No_Fatal.py',label='➡️ Siguiente')

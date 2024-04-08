@@ -12,11 +12,10 @@ col1, col2 = st.columns(2)
 with col1:
     st.page_link('Home.py',label='🏠 Inicio')
 with col2: 
-    st.page_link('pages/08_KPI.py',label='⬅️ Volver')
+    st.page_link('pages/10_Conclusiones.py',label='⬅️ Volver')
     
 
-st.title('Conclusiones')
+st.title('Cierre')
 
 
 
-st.page_link('pages/10_Cierre.py',label='➡️ Siguiente')
