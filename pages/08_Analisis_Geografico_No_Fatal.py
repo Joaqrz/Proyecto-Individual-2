@@ -53,6 +53,7 @@ Comuna_Filtrada_por_Hora = Comuna_Filtrada['HH'].value_counts()
 
 # Calcular el porcentaje de casos por hora en la comuna seleccionada
 Porcentaje_Comuna_Hora = (Comuna_Filtrada_por_Hora / Total_Comuna_Filtrada) * 100
+Porcentaje_Comuna_Hora = Porcentaje_Comuna_Hora.sort_index()
 
 # Crear el gráfico
 fig, ax = plt.subplots(figsize=(8, 6))
@@ -169,7 +170,12 @@ for index, row in mapa_filtro.iterrows():
     folium.Marker([lat, lon], icon=folium.Icon(color=color),popup=popup_text).add_to(m)
 
 # Mostrar el mapa usando folium_static
-folium_static(m)
+
+Mostrar_Mapa = st.checkbox('Mostrar Mapa')
+
+if Mostrar_Mapa:
+    folium_static(m)
+
 
 
 
