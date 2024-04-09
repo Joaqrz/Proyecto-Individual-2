@@ -117,10 +117,43 @@ for i in range(len(Porcentaje_Vehiculo_Victima)):
 plt.xticks(rotation=0)
 st.pyplot(fig)
 
+# GRAFICO DE GRAVEDAD DE LESIONES
 
+Gravedad = No_Fatales['Gravedad'].value_counts()
+Porcentaje_Gravedad = (Gravedad / total_casos) * 100
+#Grafico 
+fig,ax = plt.subplots(figsize=(8,4))
+Porcentaje_Gravedad.plot(kind='bar',color='skyblue',ax=ax)
+ax.set_title('Porcentaje de Gravedad de lesiones')
+ax.set_xlabel('Gravedad')
+ax.set_ylabel('Porcentaje')
+ax.grid(axis='y',linestyle='--',alpha=1)
+for i in range(len(Porcentaje_Gravedad)):
+    plt.annotate(str(f"{Porcentaje_Gravedad.iloc[i]:.1f}%"),
+                 xy = (i,Porcentaje_Gravedad.iloc[i]),
+                 ha = 'center', va= 'bottom')
 
+# GRAFICO DE GRAVEDAD DE LESIONES POR VEHICULO 
+Gravedad_Lesiones_Vehiculo = st.selectbox('Seleccione tipo de vehiculo', No_Fatales['Vehiculo Victima'].unique())
 
+# Filtramos
+Gravedad_Filtrado = No_Fatales[No_Fatales['Vehiculo Victima'] == Gravedad_Lesiones_Vehiculo]['Gravedad'].value_counts()
+Total_Gravedad_Filtrado = len(No_Fatales[No_Fatales['Vehiculo Victima'] == Gravedad_Lesiones_Vehiculo])
+Porcentaje_Gravedad_Filtrado = (Gravedad_Filtrado / Total_Gravedad_Filtrado) * 100
 
+# Gráfico
+fig, ax = plt.subplots(figsize=(8, 4))
+Porcentaje_Gravedad_Filtrado.plot(kind='bar', color='skyblue', ax=ax)
+ax.set_title('Porcentaje de Gravedad de lesiones por vehículo')
+ax.set_xlabel('Gravedad')
+ax.set_ylabel('Porcentaje')
+ax.grid(axis='y', linestyle='--', alpha=0.7)
+
+for i in range(len(Porcentaje_Gravedad_Filtrado)):
+    plt.annotate(f"{Porcentaje_Gravedad_Filtrado.iloc[i]:.1f}%",
+                 xy=(i, Porcentaje_Gravedad_Filtrado.iloc[i]),
+                 ha='center', va='bottom')
+st.pyplot(fig)
 
 
 st.page_link('pages/07_Analisis_Geografico_Fatal.py',label='➡️ Siguiente')
