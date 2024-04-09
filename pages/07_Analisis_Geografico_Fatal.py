@@ -15,7 +15,8 @@ st.title("Análisis Geográfico de Hechos Fatales")
 #Traigo el dataset hechos fatales
 Fatales = pd.DataFrame(pd.read_csv('src/fatales.csv'))
 Total_Casos = len(Fatales)
-
+# Convertir la columna 'fecha' de str a datetime
+Fatales['Fecha'] = pd.to_datetime(Fatales['Fecha'])
 
 # GRÁFICO DE CASOS POR COMUNA
 comuna = Fatales['Comuna'].value_counts()
@@ -55,7 +56,7 @@ Porcentaje_Comuna_Hora = (Comuna_Filtrada_por_Hora / Total_Comuna_Filtrada) * 10
 
 # Crear el gráfico
 fig, ax = plt.subplots(figsize=(8, 6))
-Porcentaje_Comuna_Hora.plot(kind='bar', color='skyblue', ax=ax)
+Porcentaje_Comuna_Hora.plot(kind='bar', color='skyblue', ax=ax, width=0.5)
 ax.set_title('Distribución de casos por hora en la comuna seleccionada')
 ax.set_xlabel('Hora')
 ax.set_ylabel('Porcentaje de casos')
@@ -66,41 +67,138 @@ for i in range(len(Porcentaje_Comuna_Hora)):
     plt.annotate(f"{Porcentaje_Comuna_Hora.iloc[i]:.1F}%", 
                  xy=(i, Porcentaje_Comuna_Hora.iloc[i]), 
                  ha='center', va='bottom',
-                 rotation = 90)
+                 rotation = 45
+                 )
 plt.xticks(rotation=0)
 
 # Mostrar el gráfico en Streamlit
 st.pyplot(fig)
 
 
+# GRAFICO POR COMUNA Y DIA
+
+# Contar los casos por dia en la comuna seleccionada
+Comuna_Filtrada_por_Dia = Comuna_Filtrada['Fecha'].dt.day_name().value_counts()
+
+# Calcular el porcentaje de casos por dia en la comuna seleccionada
+Porcentaje_Comuna_Dia = (Comuna_Filtrada_por_Dia / Total_Comuna_Filtrada) * 100
+
+# Crear el gráfico
+fig, ax = plt.subplots(figsize=(8, 6))
+Porcentaje_Comuna_Dia.plot(kind='bar', color='skyblue', ax=ax)
+ax.set_title('Distribución de casos por día en la comuna seleccionada')
+ax.set_xlabel('Día')
+ax.set_ylabel('Porcentaje de casos')
+ax.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Anotar los valores exactos de cada barra
+for i in range(len(Porcentaje_Comuna_Dia)):
+    plt.annotate(f"{Porcentaje_Comuna_Dia.iloc[i]:.1F}%", 
+                 xy=(i, Porcentaje_Comuna_Dia.iloc[i]), 
+                 ha='center', va='bottom',
+                 )
+plt.xticks(rotation=0)
+
+# Mostrar el gráfico en Streamlit
+st.pyplot(fig)
+
+
+# GRAFICO TIPO DE CALLE
+
+# Contar los casos por dia en la comuna seleccionada
+Comuna_Filtrada_por_Calzada = Comuna_Filtrada['Tipo De Calle'].value_counts()
+
+# Calcular el porcentaje de casos por dia en la comuna seleccionada
+Porcentaje_Comuna_Calzada = (Comuna_Filtrada_por_Calzada / Total_Comuna_Filtrada) * 100
+
+# Crear el gráfico
+fig, ax = plt.subplots(figsize=(8, 6))
+Porcentaje_Comuna_Calzada.plot(kind='bar', color='skyblue', ax=ax)
+ax.set_title('Casos por tipo de calzada en la comuna seleccionada')
+ax.set_xlabel('Calzada')
+ax.set_ylabel('Porcentaje de casos')
+ax.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Anotar los valores exactos de cada barra
+for i in range(len(Porcentaje_Comuna_Calzada)):
+    plt.annotate(f"{Porcentaje_Comuna_Calzada.iloc[i]:.1F}%", 
+                 xy=(i, Porcentaje_Comuna_Calzada.iloc[i]), 
+                 ha='center', va='bottom',
+                 )
+plt.xticks(rotation=0)
+
+# Mostrar el gráfico en Streamlit
+st.pyplot(fig)
+
+#GRAFICO DE TIPO DE VEHICULO VICTIMA 
+
+# Definir un diccionario de colores para cada tipo de vehículo
+colors = {
+    'AUTO': 'blue',
+    'MOTO': 'red',
+    'PEATON':'orange',
+    'SD':'gray',
+    'CARGAS':'purple',
+    'BICICLETA': 'green',
+    'PASAJEROS':'pink',
+    'MOVIL':'yellow'
+    # Añade más tipos de vehículo y colores según sea necesario
+}
+
+#Filtro
+
+
+Comuna_Filtrada_por_Victima = Comuna_Filtrada['Vehiculo Victima'].value_counts()
+
+# Calcular el porcentaje de casos por dia en la comuna seleccionada
+Porcentaje_Comuna_Victima = (Comuna_Filtrada_por_Victima / Total_Comuna_Filtrada) * 100
+
+# Crear el gráfico
+fig, ax = plt.subplots(figsize=(8, 6))
+Porcentaje_Comuna_Victima.plot(kind='bar', color=[colors.get(vehicle, 'gray') for vehicle in Porcentaje_Comuna_Victima.index], ax=ax)
+ax.set_title('Casos por tipo de vehículo en la comuna seleccionada')
+ax.set_xlabel('Vehículo')
+ax.set_ylabel('Porcentaje de casos')
+ax.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Anotar los valores exactos de cada barra
+for i in range(len(Porcentaje_Comuna_Victima)):
+    plt.annotate(f"{Porcentaje_Comuna_Victima.iloc[i]:.1F}%", 
+                 xy=(i, Porcentaje_Comuna_Victima.iloc[i]), 
+                 ha='center', va='bottom',
+                 )
+plt.xticks(rotation=0)
+st.pyplot(fig)
 
 
 
-# Mostrar el widget multiselect con las opciones ordenadas
-comunas_seleccionadas = st.multiselect("Seleccionar comunas", opciones_comunas)
+# CREO EL MAPA DE VISUALIZACION DE LOS CASOS 
 
-# Widget para seleccionar tipo de vehículo de la víctima
-tipos_vehiculo = st.multiselect("Seleccionar tipo de vehículo de la víctima", Fatales['Vehiculo Victima'].unique())
+#Primero filtro
 
-# Imprimir las opciones seleccionadas para depurar
-st.write("Comunas seleccionadas:", comunas_seleccionadas)
+mapa_filtro = Fatales[Fatales['Comuna']==Comuna_seleccionada]
 
-# Filtrar el DataFrame según los filtros seleccionados
-homicidios_filtrados = Fatales
-if comunas_seleccionadas:
-    homicidios_filtrados = homicidios_filtrados[homicidios_filtrados['Comuna'].isin(comunas_seleccionadas)]
+#Titulo del mapa
+st.header('Ubicación Geográfica de los casos')
 
-if tipos_vehiculo:
-    homicidios_filtrados = homicidios_filtrados[homicidios_filtrados['Vehiculo Victima'].isin(tipos_vehiculo)]
+
 
 # Crear un mapa centrado en una ubicación inicial
 m = folium.Map(location=[-34.6037, -58.3816], zoom_start=12)
 
 # Añadir marcadores para cada par de coordenadas de longitud y latitud
-for index, row in homicidios_filtrados.iterrows():
+for index, row in mapa_filtro.iterrows():
     lat = row['Lat']
     lon = row['Long']
-    folium.Marker([lat, lon]).add_to(m)
+    edad = row['Edad']
+    sexo = row['Sexo']
+    tipo_vehiculo = row['Vehiculo Victima']
+    atacante = row['Vehiculo Acusado']
+    hora = row['HH']
+    color = colors.get(tipo_vehiculo, 'gray')
+    # Crear el texto del pop-up
+    popup_text = f"Edad: {edad}<br>Sexo: {sexo}<br>Vehículo: {tipo_vehiculo}<br>Atacante: {atacante}<br>Hora: {hora}"
+    folium.Marker([lat, lon], icon=folium.Icon(color=color),popup=popup_text).add_to(m)
 
 # Mostrar el mapa usando folium_static
 folium_static(m)
