@@ -4,3 +4,4 @@ matplotlib
 openpyxl
 streamlit-folium
 seaborn
+plotly
