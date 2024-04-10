@@ -58,7 +58,7 @@ porcentaje_por_sexo = (distribucion_por_sexo / total_casos) * 100
 
 # Crear el gráfico de torta
 fig, ax = plt.subplots(figsize=(3, 3))
-porcentaje_por_sexo.plot(kind='pie', autopct='%1.1f%%', colors=['skyblue', 'pink'], ax=ax)
+porcentaje_por_sexo.plot(kind='pie', autopct='%1.1f%%', colors=['skyblue', 'pink','gray'], ax=ax)
 ax.set_title('Distribución de casos por sexo')
 ax.set_ylabel('')  # Eliminar la etiqueta del eje y
 
