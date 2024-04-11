@@ -26,8 +26,8 @@ No_Fatales['Fecha'] = pd.to_datetime(No_Fatales['Fecha'])
 distribucion_por_edad = No_Fatales['Edad'].value_counts()
 
 # Agrupar las edades en rangos específicos
-bins = [0, 18, 50, 65, float('inf')]
-labels = ['0-18', '19-50', '51-65', '65+']
+bins = [0, 18, 35, 53, 65, float('inf')]
+labels = ['0-18', '19-35','36-50', '51-65', '65+']
 No_Fatales['Rango de Edades'] = pd.cut(No_Fatales['Edad'], bins=bins, labels=labels, right=False)
 
 # Contar el número de casos en cada rango de edades
@@ -74,8 +74,8 @@ st.pyplot(fig)
 #DISTRIBUCION ETARIA POR SEXO
 Sexo = st.selectbox('Seleccione una opción:',['Varon','Mujer'])
 
-bins = [0, 18, 50, 65, float('inf')]
-labels = ['0-18', '19-50', '51-65', '65+']
+bins = [0, 18, 35, 53, 65, float('inf')]
+labels = ['0-18', '19-35','36-50', '51-65', '65+']
 No_Fatales['Rango de Edades'] = pd.cut(No_Fatales['Edad'], bins=bins, labels=labels, right=False)
 
 #Filtramos por sexo

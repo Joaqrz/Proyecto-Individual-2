@@ -23,4 +23,4 @@ st.page_link("pages/07_Analisis_Geografico_Fatal.py", label=" -> Ir al Mapa de H
 st.page_link("pages/08_Analisis_Geografico_No_Fatal.py",label=" -> Ir al Análisis Geográfico de Hechos No Fatales")
 st.page_link("pages/09_KPI.py",label=" -> Ir a los KPI")
 st.page_link("pages/10_Conclusiones.py",label=" -> Ir a las Conclusiones")
-st.page_link("pages/11_Cierre.py",label=" -> Ir al Cierre")
+

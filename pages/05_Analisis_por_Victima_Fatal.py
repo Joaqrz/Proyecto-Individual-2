@@ -71,8 +71,8 @@ st.pyplot(fig)
 #DISTRIBUCION ETARIA POR SEXO
 Sexo = st.selectbox('Seleccione una opción:',['MASCULINO','FEMENINO'])
 
-bins = [0, 18, 50, 65, float('inf')]
-labels = ['0-18', '19-50', '51-65', '65+']
+bins = [0, 18, 35, 53, 65, float('inf')]
+labels = ['0-18', '19-35','36-50', '51-65', '65+']
 Fatales['Rango de Edades'] = pd.cut(Fatales['Edad'], bins=bins, labels=labels, right=False)
 
 #Filtramos por sexo

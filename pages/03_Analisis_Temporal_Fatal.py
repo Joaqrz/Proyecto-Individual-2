@@ -148,7 +148,7 @@ with st.container():
 # GRÁFICO FATALIDADES POR HORA
 
 # Calcular el número de accidentes por franja horaria
-accidentes_por_franja = Fatales['HH'].value_counts()
+accidentes_por_franja = Fatales['HH'].value_counts().sort_index()
 
 # Calcular el porcentaje de accidentes para cada franja horaria
 porcentaje_accidentes = accidentes_por_franja / len(Fatales) * 100
@@ -188,7 +188,7 @@ Dia_Filtrado = (Fatales[Fatales['Fecha'].dt.day_name() == Dia])
 
 
 
-accidentes_por_franja_y_dia = Dia_Filtrado['HH'].value_counts()
+accidentes_por_franja_y_dia = Dia_Filtrado['HH'].value_counts().sort_index()
 
 
 fig, ax = plt.subplots(figsize=(12, 6))

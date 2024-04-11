@@ -149,7 +149,7 @@ with st.container():
 
 with st.container():
     # Calcular el número de accidentes por franja horaria
-    accidentes_por_franja = No_Fatales['HH'].value_counts()
+    accidentes_por_franja = No_Fatales['HH'].value_counts().sort_index()
 
     # Calcular el porcentaje de accidentes para cada franja horaria
     porcentaje_accidentes = accidentes_por_franja / len(No_Fatales) * 100
@@ -186,7 +186,7 @@ Dia = st.selectbox(
 # Filtramos el dataframe 
 Dia_Filtrado = (No_Fatales[No_Fatales['Fecha'].dt.day_name() == Dia])
 
-lesiones_por_franja_y_dia = Dia_Filtrado['HH'].value_counts()
+lesiones_por_franja_y_dia = Dia_Filtrado['HH'].value_counts().sort_index()
 
 fig, ax = plt.subplots(figsize=(12, 6))
 lesiones_por_franja_y_dia.plot(kind='bar', color='skyblue', ax=ax)
