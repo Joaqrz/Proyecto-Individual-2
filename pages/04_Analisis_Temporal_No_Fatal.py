@@ -1,10 +1,7 @@
 import streamlit as st 
 import matplotlib.pyplot as plt
-import streamlit_folium
 import pandas as pd 
-import numpy as np
-import seaborn as sns
-import calendar
+import locale
 
 # Traigo los datasets para ser analizados
 Fatales = pd.DataFrame(pd.read_csv('src/fatales.csv'))
@@ -12,13 +9,12 @@ No_Fatales = pd.DataFrame(pd.read_csv('src/No_fatales.csv'))
 
 st.page_link('Home.py',label='🏠 Inicio')
 
-st.page_link('pages/03_Analisis_Temporal_Fatal.py',label='⬅️ Volver')
+st.page_link('pages/03_Analisis_Temporal_Fatal.py',label='⬅️ Anterior: Análisis Temporal Fatal')
 
 
-st.title('Lesiones')
-
+st.title('Análisis Temporal No Fatal')
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
 # GRÁFICO LESIONES POR AÑO
-
 # Convertir la columna 'fecha' de str a datetime
 No_Fatales['Fecha'] = pd.to_datetime(No_Fatales['Fecha'])
 
@@ -52,6 +48,7 @@ with st.container():
 
     # Mostrar el gráfico en Streamlit
     st.pyplot(fig)
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
 
 #GRÁFICO VARIACION PORCENTUAL DE LESIONES POR AÑO 
 
@@ -74,6 +71,9 @@ with st.container():
     ax.grid(axis='y', linestyle='--', alpha=0.7)
     plt.xticks(rotation=45)
 
+    # Establecer el rango del eje y
+    ax.set_ylim(-45, 5)
+
     # Anotar los valores exactos de cada barra
     for i in range(len(variacion_porcentual)):
         plt.annotate(f"{variacion_porcentual.iloc[i]:.1f}%", 
@@ -85,6 +85,7 @@ with st.container():
     # Mostrar el gráfico en Streamlit
     st.pyplot(fig)
 
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
 
 # GRAFICO DE LESIONES POR MES Y POR AÑO
 
@@ -113,38 +114,52 @@ for i, value in enumerate(Lesiones_Por_Mes_y_Año):
 # Mostrar el gráfico en Streamlit
 st.pyplot(fig)
 
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
 # GRAFICO LESIONES POR DIA 
+
+# Establecer el idioma local en español
+locale.setlocale(locale.LC_TIME, 'es_ES')
+# Definir el orden de los días de la semana en español
+orden_dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
 
 with st.container():
     # Crear una columna nueva con el día de la semana
-    No_Fatales['Dia_semana'] = No_Fatales['Fecha'].dt.day_name()
+    No_Fatales['Dia_semana'] = No_Fatales['Fecha'].dt.day_name(locale='es_ES')
 
-    # Contar la cantidad de casos por día de la     semana
+    # Contar la cantidad de casos por día de la semana
     casos_por_dia = No_Fatales['Dia_semana'].value_counts()
-
+    
+    # Reordenar los valores de acuerdo al orden definido
+    casos_por_dia = casos_por_dia.reindex(orden_dias)
+    
     # Calcular el porcentaje de casos por día de la semana
     porcentaje_por_dia = casos_por_dia / casos_por_dia.sum() * 100
+    
+    # Obtener los nombres de los días de la semana en español y en orden
+    dias_ordenados = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
+
+    # Reindexar los datos para asegurar el orden correcto en el gráfico
+    porcentaje_por_dia_ordenado = porcentaje_por_dia.reindex(dias_ordenados)
 
     # Crear el gráfico de barras
     fig, ax = plt.subplots(figsize=(8, 4))
-    bars = porcentaje_por_dia.plot(kind='bar', color='skyblue', ax=ax)
+    bars = porcentaje_por_dia_ordenado.plot(kind='bar', color='skyblue', ax=ax)
     ax.set_title('Distribución porcentual de lesiones por día de la semana')
     ax.set_xlabel('Día de la semana')
     ax.set_ylabel('Porcentaje de casos')
     ax.grid(axis='y', linestyle='--', alpha=0.7)
     plt.xticks(rotation=45)
-
+    
     # Anotar los valores de porcentaje en cada barra
     for i in range(len(porcentaje_por_dia)):
         plt.annotate(f'{porcentaje_por_dia.iloc[i]:.1f}%', 
                     xy=(i, porcentaje_por_dia.iloc[i]), 
                     ha='center', va='bottom')
 
-
     # Mostrar el gráfico en Streamlit
     st.pyplot(fig)
 
-
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
 # GRAFICO LESIONES POR HORA
 
 with st.container():
@@ -177,14 +192,20 @@ with st.container():
     # Mostrar el gráfico en Streamlit
     st.pyplot(fig)
 
-# GRAFICO + FILTRO DISTRIBUCIÓN HORARIA POR DIA FATALES
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
+# GRAFICO + FILTRO DISTRIBUCIÓN HORARIA POR DIA NO FATALES
 
-Dia = st.selectbox(
-    'Seleccione un día',
-    ((No_Fatales['Fecha'].dt.day_name().unique())))
+# Obtener los nombres de los días de la semana en español
+dias_espanol = pd.to_datetime(No_Fatales['Fecha']).dt.day_name(locale='Spanish')
+
+# Obtener los nombres únicos de los días de la semana en español
+dias_unicos = dias_espanol.unique()
+
+# Crear el selectbox con los días de la semana en español
+Dia = st.selectbox('Seleccione un día', dias_unicos)
 
 # Filtramos el dataframe 
-Dia_Filtrado = (No_Fatales[No_Fatales['Fecha'].dt.day_name() == Dia])
+Dia_Filtrado = (No_Fatales[No_Fatales['Fecha'].dt.day_name(locale='Spanish') == Dia])
 
 lesiones_por_franja_y_dia = Dia_Filtrado['HH'].value_counts().sort_index()
 
@@ -208,4 +229,5 @@ for i in range(len(lesiones_por_franja_y_dia)):
 # Mostrar el gráfico en Streamlit
 st.pyplot(fig)
 
-st.page_link('pages/05_Analisis_por_Victima_Fatal.py',label='➡️ Siguiente')
+st.page_link('pages/05_Analisis_por_Victima_Fatal.py',label='➡️ Siguiente: Análisis por Victima Fatal')
+st.divider()

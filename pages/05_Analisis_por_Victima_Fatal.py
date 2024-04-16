@@ -14,17 +14,18 @@ Fatales['Fecha'] = pd.to_datetime(Fatales['Fecha'])
 
 st.page_link('Home.py',label='🏠 Inicio')
 
-st.page_link('pages/04_Analisis_Temporal_No_Fatal.py',label='⬅️ Volver')
+st.page_link('pages/04_Analisis_Temporal_No_Fatal.py',label='⬅️ Anterior: Análisis Temporal No Fatal')
 
 st.title('Análisis por Víctima Fatal')
 
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
 # GRAFICO DISTRIBUCIÓN ETARIA
 
 distribucion_por_edad = Fatales['Edad'].value_counts()
 
 # Agrupar las edades en rangos específicos
-bins = [0, 18, 50, 65, float('inf')]
-labels = ['0-18', '19-50', '51-65', '65+']
+bins = [0, 18, 36, 54, 72, float('inf')]
+labels = ['0-18', '19-35','36-53', '54-70', '71+']
 Fatales['Rango de Edades'] = pd.cut(Fatales['Edad'], bins=bins, labels=labels, right=False)
 
 # Contar el número de casos en cada rango de edades
@@ -46,6 +47,7 @@ plt.xticks(rotation=0)
 st.pyplot(fig)
 
 
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
 #DISTRIBUCION POR SEXO
 # Contar el número total de casos
 total_casos = len(Fatales)
@@ -68,11 +70,13 @@ plt.axis('equal')
 # Mostrar el gráfico
 st.pyplot(fig)
 
+
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
 #DISTRIBUCION ETARIA POR SEXO
 Sexo = st.selectbox('Seleccione una opción:',['MASCULINO','FEMENINO'])
 
-bins = [0, 18, 35, 53, 65, float('inf')]
-labels = ['0-18', '19-35','36-50', '51-65', '65+']
+bins = [0, 18, 36, 54, 72, float('inf')]
+labels = ['0-18', '19-35','36-53', '54-70', '71+']
 Fatales['Rango de Edades'] = pd.cut(Fatales['Edad'], bins=bins, labels=labels, right=False)
 
 #Filtramos por sexo
@@ -97,6 +101,7 @@ plt.xticks(rotation=0)
 st.pyplot(fig)
 
 
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
 #DISTRIBUCION DE TIPOS DE VEHICULOS DE LAS VICTIMAS
 Vehiculo_Victima = Fatales['Vehiculo Victima'].value_counts()
 Porcentaje_Vehiculo_Victima = (Vehiculo_Victima/ total_casos) * 100
@@ -115,8 +120,9 @@ plt.xticks(rotation=0)
 st.pyplot(fig)
 
 
-#DISTRIBUCION DE ROLES SEGUN EL VEHICULO
 
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
+#DISTRIBUCION DE ROLES SEGUN EL VEHICULO
 Vehiculo = st.selectbox('Seleccione un vehiculo:',Fatales['Vehiculo Victima'].unique())
 
 #Filtramos el dataframe 
@@ -135,9 +141,10 @@ for i in range(len(Porcentaje_Roles)):
     plt.annotate(str(f"{Porcentaje_Roles.iloc[i]:.1f}%"),
                  xy = (i,Porcentaje_Roles.iloc[i]),
                  ha = 'center', va = 'bottom')
+plt.xticks(rotation=0)
 st.pyplot(fig)
     
-
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
 # VICTIMARIOS POR VEHICULO VICTIMA
 
 Vehiculo_Victima = Vehiculo_Filtrado
@@ -145,7 +152,7 @@ Vehiculo_Victimario = Vehiculo_Victima['Vehiculo Acusado'].value_counts()
 Porcentaje_Vehiculos_Victimarios = (Vehiculo_Victimario/total_casos_vehiculo) * 100
 #Graficamos 
 fig, ax = plt.subplots(figsize=(8,4))
-Porcentaje_Vehiculos_Victimarios.plot(kind='bar',color='skyblue',ax=ax)
+Porcentaje_Vehiculos_Victimarios.plot(kind='bar',color='skyblue',ax=ax,width=0.8)
 ax.set_title('Porcentaje de Victimarios según el vehículo de la víctima')
 ax.set_xlabel('Victimarios')
 ax.set_ylabel('Porcentaje')
@@ -154,6 +161,7 @@ for i in range (len(Porcentaje_Vehiculos_Victimarios)):
     plt.annotate(str(f"{Porcentaje_Vehiculos_Victimarios.iloc[i]:.1f}%"),
                  xy = (i,Porcentaje_Vehiculos_Victimarios.iloc[i]),
                  ha = 'center', va = 'bottom')
+plt.xticks(rotation=22.5)
 st.pyplot(fig)
 
 
@@ -161,4 +169,5 @@ st.pyplot(fig)
 
 
 
-st.page_link('pages/06_Analisis_por_Victima_No_Fatal.py',label='➡️ Siguiente')
+st.page_link('pages/06_Analisis_por_Victima_No_Fatal.py',label='➡️ Siguiente: Análisis por Víctima No Fatal')
+st.divider()

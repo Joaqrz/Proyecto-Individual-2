@@ -1,10 +1,7 @@
 import streamlit as st 
 import matplotlib.pyplot as plt
-import streamlit_folium
 import pandas as pd 
-import numpy as np
-import seaborn as sns
-import calendar
+import locale
 
 # Traigo los datasets para ser analizados
 Fatales = pd.DataFrame(pd.read_csv('src/fatales.csv'))
@@ -16,12 +13,11 @@ No_Fatales = pd.DataFrame(pd.read_csv('src/No_fatales.csv'))
 
 st.page_link('Home.py',label='🏠 Inicio')
 
-st.page_link('pages/02_Objetivo.py',label='⬅️ Volver')
+st.page_link('pages/02_Objetivos.py',label='⬅️ Volver: Objetivos')
 
-fig, ax= plt.subplots()
+st.title('Análisis Temporal Fatal')
 
-st.title('Fatalidades')
-
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
 # GRÁFICOS FATALIDADES POR AÑO
 
 # Convertir la columna 'fecha' de str a datetime
@@ -56,6 +52,7 @@ plt.legend()
 # Mostrar el gráfico en Streamlit
 st.pyplot(fig)
 
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
 # GRÁFICO VARIACION PORCENTUAL FATALIDADES POR AÑO
 
 with st.container():
@@ -87,7 +84,9 @@ with st.container():
 
 # Mostrar el gráfico en Streamlit
 st.pyplot(fig)
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
 
+#GRAFICO DE CASOS POR MESES
 # Seleccionar el año
 Año = st.selectbox('Seleccione un Año', Fatales['Fecha'].dt.year.unique())
 
@@ -112,15 +111,20 @@ for i, value in enumerate(Fatales_Por_Mes_y_Año):
 
 # Mostrar el gráfico en Streamlit
 st.pyplot(fig)
-
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
 # GRÁFICO  FATALIDADES POR DIA
+# Definir el orden de los días de la semana en español
+orden_dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
 
 with st.container():
     # Crear una columna nueva con el día de la semana
-    Fatales['Dia_semana'] = Fatales['Fecha'].dt.day_name()
+    Fatales['Dia_semana'] = Fatales['Fecha'].dt.day_name(locale='es_ES')
 
     # Contar la cantidad de casos por día de la semana
     casos_por_dia = Fatales['Dia_semana'].value_counts()
+
+    # Reordenar los valores de acuerdo al orden definido
+    casos_por_dia = casos_por_dia.reindex(orden_dias)
 
     # Calcular el porcentaje de casos por día de la semana
     porcentaje_por_dia = casos_por_dia / casos_por_dia.sum() * 100
@@ -140,13 +144,12 @@ with st.container():
                     xy=(i, porcentaje_por_dia.iloc[i]), 
                     ha='center', va='bottom')
 
-    
     # Mostrar el gráfico en Streamlit
     st.pyplot(fig)
 
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
 
 # GRÁFICO FATALIDADES POR HORA
-
 # Calcular el número de accidentes por franja horaria
 accidentes_por_franja = Fatales['HH'].value_counts().sort_index()
 
@@ -176,24 +179,33 @@ for i in range(len(porcentaje_accidentes)):
 # Mostrar el gráfico en Streamlit
 st.pyplot(fig)
 
+
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
+
 # GRAFICO + FILTRO DISTRIBUCIÓN HORARIA POR DIA FATALES
 
-Dia = st.selectbox(
-    'Seleccione un día',
-    ((Fatales['Fecha'].dt.day_name().unique())))
+# Establecer el idioma local en español
+locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
 
-# Filtramos el dataframe 
-Dia_Filtrado = (Fatales[Fatales['Fecha'].dt.day_name() == Dia])
+# Obtener los nombres de los días de la semana en español
+dias_espanol = pd.to_datetime(Fatales['Fecha']).dt.day_name(locale='Spanish')
 
+# Obtener los nombres únicos de los días de la semana en español
+dias_unicos = dias_espanol.unique()
 
+# Crear el selectbox con los días de la semana en español
+Dia = st.selectbox('Seleccione un día', dias_unicos)
 
+# Filtrar el dataframe según el día seleccionado
+Dia_Filtrado = Fatales[pd.to_datetime(Fatales['Fecha']).dt.day_name(locale='Spanish') == Dia]
 
+# Contar la cantidad de casos fatales por franja horaria para el día seleccionado
 accidentes_por_franja_y_dia = Dia_Filtrado['HH'].value_counts().sort_index()
 
-
+# Crear el gráfico de barras
 fig, ax = plt.subplots(figsize=(12, 6))
 accidentes_por_franja_y_dia.plot(kind='bar', color='skyblue', ax=ax)
-ax.set_title('Casos Fatales por franja horaria por día seleccionado')
+ax.set_title('Casos Fatales por franja horaria para el día seleccionado')
 ax.set_xlabel('Franja horaria')
 ax.set_ylabel('Fatalidades')
 ax.grid(axis='y', linestyle='--', alpha=1.0)
@@ -210,17 +222,7 @@ for i in range(len(accidentes_por_franja_y_dia)):
 
 # Mostrar el gráfico en Streamlit
 st.pyplot(fig)
-
-
-
-
-st.page_link('pages/04_Analisis_Temporal_No_Fatal.py',label='➡️ Siguiente')
-
-
-
-
-
-
+st.page_link('pages/04_Analisis_Temporal_No_Fatal.py',label='➡️ Siguiente: Análisis Temporal No Fatal')
 st.divider()
 
 

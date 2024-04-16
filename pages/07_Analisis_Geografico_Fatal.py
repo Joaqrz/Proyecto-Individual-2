@@ -8,17 +8,21 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 st.page_link('Home.py',label='🏠 Inicio')
-st.page_link('pages/06_Analisis_por_Victima_No_Fatal.py',label='⬅️ Volver')
+st.page_link('pages/06_Analisis_por_Victima_No_Fatal.py',label='⬅️ Volver: Análisis por Victima No Fatal')
 
-st.title("Análisis Geográfico de Hechos Fatales")
+st.title("Análisis Geográfico Fatal")
 
-#Traigo el dataset hechos fatales
+#Traigo los dataset
 Fatales = pd.DataFrame(pd.read_csv('src/fatales.csv'))
 Total_Casos = len(Fatales)
+Barrios = pd.DataFrame(pd.read_csv('src/Barrios.csv'))
 # Convertir la columna 'fecha' de str a datetime
 Fatales['Fecha'] = pd.to_datetime(Fatales['Fecha'])
 
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
+
 # GRÁFICO DE CASOS POR COMUNA
+
 comuna = Fatales['Comuna'].value_counts()
 Porcentaje_Comuna = (comuna / Total_Casos) * 100
 #Grafico 
@@ -36,11 +40,27 @@ for i in range(len(Porcentaje_Comuna)):
 plt.xticks(rotation=0)
 st.pyplot(fig)
 
+
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
+
 # GRAFICO DE CASOS POR COMUNA Y HORA
-# Obtener las opciones únicas de la columna COMUNA y ordenarlas
+# Obtener la lista de opciones de comuna
 opciones_comunas = sorted(Fatales['Comuna'].unique())
 
-Comuna_seleccionada = st.selectbox('Seleccione Una Comuna:', opciones_comunas)
+# Mostrar el selectbox para seleccionar una comuna
+Comuna_seleccionada = st.selectbox('Seleccione una Comuna:', opciones_comunas)
+
+# Filtrar los barrios correspondientes a la comuna seleccionada
+barrios_de_la_comuna = Barrios[Barrios['COMUNA'] == Comuna_seleccionada]
+
+# Eliminar la columna 'Unnamed: 0'
+if 'Unnamed: 0' in barrios_de_la_comuna.columns:
+    barrios_de_la_comuna.drop(columns=['Unnamed: 0'], inplace=True)
+
+# Mostrar los barrios de la comuna seleccionada
+st.write("Barrios de la Comuna seleccionada:")
+st.write(barrios_de_la_comuna)
+
 
 # Filtrar el DataFrame por la comuna seleccionada
 Comuna_Filtrada = Fatales[Fatales['Comuna'] == Comuna_seleccionada]
@@ -71,18 +91,31 @@ for i in range(len(Porcentaje_Comuna_Hora)):
                  rotation = 45
                  )
 plt.xticks(rotation=0)
-
+ # Establecer el rango del eje y
+ax.set_ylim(0, 15)
 # Mostrar el gráfico en Streamlit
 st.pyplot(fig)
 
-
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
 # GRAFICO POR COMUNA Y DIA
 
+# Definir el orden de los días de la semana en español
+orden_dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
+
+# Crear una columna nueva con el día de la semana
+Fatales['Dia_semana'] = Fatales['Fecha'].dt.day_name(locale='es_ES')
+
 # Contar los casos por dia en la comuna seleccionada
-Comuna_Filtrada_por_Dia = Comuna_Filtrada['Fecha'].dt.day_name().value_counts()
+Comuna_Filtrada_por_Dia = Fatales['Dia_semana'].value_counts()
+
+# Reordenar los valores de acuerdo al orden definido
+Comuna_Filtrada_por_Dia = Comuna_Filtrada_por_Dia.reindex(orden_dias)
+
+# Contar la cantidad de casos en la comuna filtrada
+Total_Casos_Comuna_Filtrada = len(Fatales)
 
 # Calcular el porcentaje de casos por dia en la comuna seleccionada
-Porcentaje_Comuna_Dia = (Comuna_Filtrada_por_Dia / Total_Comuna_Filtrada) * 100
+Porcentaje_Comuna_Dia = (Comuna_Filtrada_por_Dia / Total_Casos_Comuna_Filtrada) * 100
 
 # Crear el gráfico
 fig, ax = plt.subplots(figsize=(8, 6))
@@ -103,7 +136,7 @@ plt.xticks(rotation=0)
 # Mostrar el gráfico en Streamlit
 st.pyplot(fig)
 
-
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
 # GRAFICO TIPO DE CALLE
 
 # Contar los casos por dia en la comuna seleccionada
@@ -130,6 +163,8 @@ plt.xticks(rotation=0)
 
 # Mostrar el gráfico en Streamlit
 st.pyplot(fig)
+
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
 
 #GRAFICO DE TIPO DE VEHICULO VICTIMA 
 
@@ -171,7 +206,7 @@ for i in range(len(Porcentaje_Comuna_Victima)):
 plt.xticks(rotation=0)
 st.pyplot(fig)
 
-
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
 
 # CREO EL MAPA DE VISUALIZACION DE LOS CASOS 
 
@@ -205,4 +240,5 @@ for index, row in mapa_filtro.iterrows():
 folium_static(m)
 
 
-st.page_link('pages/08_Analisis_Geografico_No_Fatal.py',label='➡️ Siguiente')
+st.page_link('pages/08_Analisis_Geografico_No_Fatal.py',label='➡️ Siguiente: Análisis Geográfico No fatal')
+st.divider()

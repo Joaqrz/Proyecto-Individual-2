@@ -10,7 +10,7 @@ import calendar
 
 
 st.page_link('Home.py',label='🏠 Inicio')
-st.page_link('pages/05_Analisis_por_Victima_Fatal.py',label='⬅️ Volver')
+st.page_link('pages/05_Analisis_por_Victima_Fatal.py',label='⬅️ Anterior: Análisis por Victima Fatal')
     
 st.title('Análisis por Víctima No Fatal')
 #Importo el dataset 
@@ -20,14 +20,14 @@ No_Fatales['Fecha'] = pd.to_datetime(No_Fatales['Fecha'])
 
 
 
-
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
 # GRAFICO DISTRIBUCIÓN ETARIA
 
 distribucion_por_edad = No_Fatales['Edad'].value_counts()
 
 # Agrupar las edades en rangos específicos
-bins = [0, 18, 35, 53, 65, float('inf')]
-labels = ['0-18', '19-35','36-50', '51-65', '65+']
+bins = [0, 18, 36, 54, 72, float('inf')]
+labels = ['0-18', '19-35','36-53', '54-70', '71+']
 No_Fatales['Rango de Edades'] = pd.cut(No_Fatales['Edad'], bins=bins, labels=labels, right=False)
 
 # Contar el número de casos en cada rango de edades
@@ -48,7 +48,7 @@ for i in range(len(distribucion_por_rango)):
 plt.xticks(rotation=0)
 st.pyplot(fig)
 
-
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
 #DISTRIBUCION POR SEXO
 # Contar el número total de casos
 total_casos = len(No_Fatales)
@@ -71,11 +71,13 @@ plt.axis('equal')
 # Mostrar el gráfico
 st.pyplot(fig)
 
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
+
 #DISTRIBUCION ETARIA POR SEXO
 Sexo = st.selectbox('Seleccione una opción:',['Varon','Mujer'])
 
-bins = [0, 18, 35, 53, 65, float('inf')]
-labels = ['0-18', '19-35','36-50', '51-65', '65+']
+bins = [0, 18, 36, 54, 72, float('inf')]
+labels = ['0-18', '19-35','36-53', '54-70', '71+']
 No_Fatales['Rango de Edades'] = pd.cut(No_Fatales['Edad'], bins=bins, labels=labels, right=False)
 
 #Filtramos por sexo
@@ -99,6 +101,7 @@ for i in range(len(distribucion_por_rango_y_sexo)):
 plt.xticks(rotation=0)
 st.pyplot(fig)
 
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
 
 #DISTRIBUCION DE TIPOS DE VEHICULOS DE LAS VICTIMAS
 Vehiculo_Victima = No_Fatales['Vehiculo Victima'].value_counts()
@@ -117,6 +120,8 @@ for i in range(len(Porcentaje_Vehiculo_Victima)):
 plt.xticks(rotation=0)
 st.pyplot(fig)
 
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
+
 # GRAFICO DE GRAVEDAD DE LESIONES
 
 Gravedad = No_Fatales['Gravedad'].value_counts()
@@ -132,6 +137,9 @@ for i in range(len(Porcentaje_Gravedad)):
     plt.annotate(str(f"{Porcentaje_Gravedad.iloc[i]:.1f}%"),
                  xy = (i,Porcentaje_Gravedad.iloc[i]),
                  ha = 'center', va= 'bottom')
+
+st.pyplot(fig)
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
 
 # GRAFICO DE GRAVEDAD DE LESIONES POR VEHICULO 
 Gravedad_Lesiones_Vehiculo = st.selectbox('Seleccione tipo de vehiculo', No_Fatales['Vehiculo Victima'].unique())
@@ -156,4 +164,5 @@ for i in range(len(Porcentaje_Gravedad_Filtrado)):
 st.pyplot(fig)
 
 
-st.page_link('pages/07_Analisis_Geografico_Fatal.py',label='➡️ Siguiente')
+st.page_link('pages/07_Analisis_Geografico_Fatal.py',label='➡️ Siguiente: Análisis Geográfico Fatal')
+st.divider()
