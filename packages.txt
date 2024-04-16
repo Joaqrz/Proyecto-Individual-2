@@ -1,1 +1,1 @@
-locale
+locale-es_ES
