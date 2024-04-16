@@ -12,6 +12,10 @@ Dos archivos ipynb:
 Un archivo .py:
 * Home.py: Es la página de inicio que el cliente vé a la hora de ingresar al dashboard.
 
+Dos archivos .txt:
+* packages.txt: Indica a streamlit cloud qué paquetes se van a usar.
+* requirements.txt: Indica a streamlit cloud qué librerías se van a usar.
+
 Tres carpetas: 
 * raw: Se alojan los datos crudos para ser transformados.
 * src: Directorio donde se guardan  los datos ya extraidos y transformados para ser consumidos en el dashboard.
