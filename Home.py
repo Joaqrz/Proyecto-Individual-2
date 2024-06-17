@@ -15,5 +15,4 @@ st.page_link("pages/07_Analisis_Geografico_Fatal.py", label=" -> Ir a Mapa de He
 st.page_link("pages/08_Analisis_Geografico_No_Fatal.py",label=" -> Ir a Análisis Geográfico de Hechos No Fatales")
 st.page_link("pages/09_KPIs.py",label=" -> Ir a KPIs")
 st.page_link("pages/10_Conclusiones.py",label=" -> Ir a Conclusiones")
-st.page_link("")
 st.divider()
