@@ -67,6 +67,6 @@ pages:
 # Link:
 
 El dashboard puede accederse a través del siguiente enlace:
-https://dashboardincidentes.streamlit.app
+https://proyecto-individual-2.streamlit.app
 
 (Si la app se encuentra suspendida, hacer click en 'Yes, wake it up.')
